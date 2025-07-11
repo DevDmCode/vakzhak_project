@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <!-- GAME PAGE HEADER -->
+    <section class="game-page-header">
+        <div class="game-header-content">
+            <h1 class="scroll-animate">Our Games Collection</h1>
+            <p class="scroll-animate">Discover our carefully crafted tabletop games designed for unforgettable gaming experiences</p>
+        </div>
+    </section>
+
+    <!-- GAME LIST -->
+    <section id="games">
+        {% for game in games %}
+        <div class="game-block">
+            <div class="game-text floating-text">
+                <h2 class="scroll-animate">{{ game.title }}</h2>
+                <p class="scroll-animate">{{ game.description|linebreaks }}</p>
+                <p class="buy-game-text">you can buy our game at: </p>
+                <div class="store-logos">
+                    {% for name, link in game.marketplace_links.items %}
+                        <a href="{{ link }}"><img src="{% static 'main/icons/'|add:name|add:'.png' %}"></a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="game-image floating-image">
+                <img src="{% static "main/dragon.png" %}">
+                <img src="{% static "main/knight.png" %}">
+                <img src="{% static "main/hellhound.png" %}">
+                <img src="{%static "main/elv.png" %}" alt="elv">
+                <img src="{%static "main/grotkh.png" %}" alt="grotkh">
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+{% endblock %}

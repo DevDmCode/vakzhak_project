@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Taverna Games{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'main/styles.css' %}">
+</head>
+<body>
+    <!-- NAVIGATION BAR -->
+    <nav class="top-bar">
+        <div class="nav-left">
+            <img src="{% static 'main/logo.png' %}" class="nav-logo" alt="Logo">
+        </div>
+        <div class="nav-right">
+            <a href="https://t.me/your_telegram_link" target="_blank" class="nav-link">
+                <span class="telegram-icon">📱</span>
+                Contact Developers (Telegram)
+            </a>
+            <a href="https://t.me/your_blog_channel" target="_blank" class="nav-link">
+                <span class="telegram-icon">📱</span>
+                Developers Blog (Telegram)
+            </a>
+        </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <footer>
+        <p>&copy; 2025 PopsCorp. All rights reserved.</p>
+        <p><a href="mailto:contact@pops.corp">contact@pops.corp</a></p>
+    </footer>
+
+    <script>
+        // Scroll-triggered animation function
+        function createScrollAnimation() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all text elements
+            const textElements = document.querySelectorAll('.scroll-animate');
+            textElements.forEach(el => observer.observe(el));
+        }
+
+        // Carousel functionality with image source changing
+        function initializeCarousel() {
+            const gameImages = document.querySelectorAll('.game-image');
+            
+            gameImages.forEach((gameImage, gameIndex) => {
+                const images = gameImage.querySelectorAll('img');
+                let currentIndex = 0;
+                
+                // Store original image sources
+                const imageSources = Array.from(images).map(img => ({
+                    src: img.src,
+                    alt: img.alt
+                }));
+                
+                // Add carousel indicators
+                const indicators = document.createElement('div');
+                indicators.className = 'carousel-indicators';
+                images.forEach((_, index) => {
+                    const indicator = document.createElement('div');
+                    indicator.className = 'indicator';
+                    if (index === 0) indicator.classList.add('active');
+                    indicator.addEventListener('click', () => goToSlide(index));
+                    indicators.appendChild(indicator);
+                });
+                gameImage.appendChild(indicators);
+                
+                // Function to go to specific slide
+                function goToSlide(index) {
+                    if (index < 0) index = images.length - 1;
+                    if (index >= images.length) index = 0;
+                    
+                    // Remove active class from all images and indicators
+                    images.forEach(img => img.classList.remove('active'));
+                    gameImage.querySelectorAll('.indicator').forEach(ind => ind.classList.remove('active'));
+                    
+                    // Get the center image (4th position in the fan)
+                    const centerImage = images[3]; // Center position
+                    
+                    // Change the center image source immediately (no fade)
+                    centerImage.src = imageSources[index].src;
+                    centerImage.alt = imageSources[index].alt;
+                    
+                    // Add active class to current image and indicator
+                    centerImage.classList.add('active');
+                    gameImage.querySelectorAll('.indicator')[index].classList.add('active');
+                    
+                    // Update current index
+                    currentIndex = index;
+                }
+                
+                // Function to go to next slide
+                function nextSlide() {
+                    goToSlide(currentIndex + 1);
+                }
+                
+                // Function to go to previous slide
+                function prevSlide() {
+                    goToSlide(currentIndex - 1);
+                }
+                
+                // Add click events for navigation
+                gameImage.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const clickX = e.clientX - rect.left;
+                    
+                    // Check if click is on left or right side
+                    if (clickX < rect.width * 0.3) {
+                        prevSlide();
+                    } else if (clickX > rect.width * 0.7) {
+                        nextSlide();
+                    }
+                });
+                
+                // Add keyboard navigation
+                gameImage.addEventListener('keydown', function(e) {
+                    if (e.key === 'ArrowLeft') {
+                        prevSlide();
+                    } else if (e.key === 'ArrowRight') {
+                        nextSlide();
+                    }
+                });
+                
+                // Make the container focusable
+                gameImage.setAttribute('tabindex', '0');
+                
+                // Auto-play carousel
+                let autoPlayInterval = setInterval(nextSlide, 5000);
+                
+                // Pause auto-play on hover
+                gameImage.addEventListener('mouseenter', () => {
+                    clearInterval(autoPlayInterval);
+                });
+                
+                gameImage.addEventListener('mouseleave', () => {
+                    autoPlayInterval = setInterval(nextSlide, 5000);
+                });
+                
+                // Initialize first slide
+                goToSlide(0);
+            });
+        }
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            createScrollAnimation();
+            initializeCarousel();
+        });
+    </script>
+</body>
+</html>

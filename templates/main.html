@@ -1,0 +1,44 @@
+{% load static %}
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Игровая Таверна</title>
+    <link rel="stylesheet" href="{% static 'main/styles.css' %}">
+</head>
+<body>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <img src="{% static 'main/logo.png' %}" class="logo">
+        <h1>PopsCorp<br>TableTop Development</h1>
+        <p>"PopsCorp" — the large cock team </p>
+        <a href="#games" class="btn">choose a game</a>
+    </section>
+
+    <!-- GAME LIST -->
+    <section id="games">
+        {% for game in games %}
+        <div class="game-block">
+            <div class="game-text">
+                <h2>{{ game.title }}</h2>
+                <p>{{ game.description|linebreaks }}</p>
+                <a href="#" class="btn small">ПОДРОБНЕЕ ОБ ИГРЕ</a>
+                <p class="buy-game-text">you can buy our game at: </p>
+                <div class="store-logos">
+                    {% for name, link in game.marketplace_links.items %}
+                        <a href="{{ link }}"><img src="{% static 'main/icons/'|add:name|add:'.png' %}"></a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="game-image">
+                <img src="{% static "main/dragon.png" %}">
+                <img src="{% static "main/knight.png" %}">
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+</body>
+</html>
+{% endblock %}
